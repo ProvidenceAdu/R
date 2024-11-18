@@ -1,0 +1,592 @@
+
+
+```{r}
+options(scipen=999)
+library(haven)
+library(dplyr)
+library(tidycensus)
+library(janitor)
+library(purrr)
+```
+
+```{r}
+path = "C:/Users/padu/Desktop/UrbanInstitute/HousingChoiceVoucher/"
+```
+
+### Search
+
+```{r}
+Search <- load_variables(year = 2019, dataset = "acs5", cache = TRUE)
+View(Search)
+```
+
+### Preview 
+
+```{r}
+
+Preview <- get_acs(geography = "tract", year = 2019, variables = "B17020_002", state = "NC", county = NCcounty ,survey = "acs5", geometry = FALSE, output = "wide")
+View(Preview)
+
+```
+
+
+### Housing Choice Vouchers 
+
+```{r}
+#North Carolina Counties
+NCcounty = lst(119,071,021,051,129,151,001,183,081)
+
+#South Carolina Counties 
+SCcounty = lst(045,083,007,019,079)
+
+#Georgia Counties
+GAcounty = lst(051, 245, 059, 121)
+
+#Virginia Counties
+VAcounty = lst(730, 015, 087, 810, 710)
+
+#AllCounites 
+
+AllCounties = lst(119,071,021,051,129,151,001,183,081,045,083,007,019,079,051, 245, 059, 121,
+                  730, 015, 087, 810, 710)
+
+#AllStates
+
+AllStates = lst(37,45,51,13)
+```
+
+
+### AllCounties
+```{r}
+ACS <- get_acs(geography = "tract", year = 2019, variables = c(Totalrent = "B25063_001"), state = c("NC","SC", "VA", "GA"), county = AllCounties , geometry = FALSE, output = "wide")
+View(ACS)
+```
+#### GrossRent
+
+## North Carolina
+```{r}
+NC <- get_acs(geography = "tract", year = 2019, variables = c(Totalrent = "B25063_001"), state = "NC", county = NCcounty ,survey = "acs5", geometry = FALSE, output = "wide")
+View(NC)
+```
+
+```{r}
+write.csv(NC, paste(path ,"NCGrossRent.csv"), row.names = FALSE)
+```
+
+
+
+## South Carolina
+```{r}
+SC <- get_acs(geography = "tract", year = 2019, variables = c(Totalrent = "B25063_001"), state = "SC", county = SCcounty ,survey = "acs5", geometry = FALSE, output = "wide")
+View(SC)
+```
+
+```{r}
+write.csv(SC, paste(path ,"SCGrossRent.csv"), row.names = FALSE)
+```
+
+
+## Georgia
+```{r}
+GA <- get_acs(geography = "tract", year = 2019, variables = c(Totalrent = "B25063_001"), state = "GA", county = GAcounty ,survey = "acs5", geometry = FALSE, output = "wide")
+View(GA)
+```
+
+```{r}
+write.csv(GA, paste(path ,"GAGrossRent.csv"), row.names = FALSE)
+```
+
+## Virginia
+
+```{r}
+VA <- get_acs(geography = "tract", year = 2019, variables = c(Totalrent = "B25063_001"), state = "VA", county = VAcounty ,dataset = "acs5", geometry = FALSE, output = "wide")
+View(VA)
+```
+
+
+```{r}
+
+write.csv(VA, paste(path ,"VAGrossRent.csv"), row.names = FALSE)
+```
+
+
+
+
+```{r}
+ACS2018 <- load_variables(year = 2019, dataset = "acs5", cache = TRUE)
+View(ACS2018)
+```
+
+## Race 
+
+#North Carolina 
+```{r}
+NCRace2019 <- get_acs(geography = "tract", year = 2019 , state = "NC", 
+               county = NCcounty, variables = c(TotalRace = "B02001_001",
+                                             WhiteAlone = "B02001_002",
+                                             BlackorAfricanAmericanalone = "B02001_003",
+                                             AmericanIndianandAlaskaNativealone = "B02001_004",
+                                             Asianalone = "B02001_005",
+                                             NativeHawaiianandOtherPacificIslanderalone = "B02001_006",
+                                            Someotherracealone = "B02001_007",
+                                            Twoormoreraces = "B02001_008",
+                                            TwoormoreracesTworacesincludingSomeotherrace = "B02001_009",
+                                            TworacesexcludingSomeotherraceandthreeormoreraces = "B02001_010"),
+               survey = "acs5", output = "wide")
+View(NCRace2019) 
+```
+
+```{r}
+write.csv(NCRace2019, paste(path ,"NCRace2019.csv"), row.names = FALSE)
+```
+
+## South Carolina 
+```{r}
+SCRace2019 <- get_acs(geography = "tract", year = 2019 , state = "SC", 
+               county = SCcounty, variables = c(TotalRace = "B02001_001",
+                                             WhiteAlone = "B02001_002",
+                                             BlackorAfricanAmericanalone = "B02001_003",
+                                             AmericanIndianandAlaskaNativealone = "B02001_004",
+                                             Asianalone = "B02001_005",
+                                             NativeHawaiianandOtherPacificIslanderalone = "B02001_006",
+                                            Someotherracealone = "B02001_007",
+                                            Twoormoreraces = "B02001_008",
+                                            TwoormoreracesTworacesincludingSomeotherrace = "B02001_009",
+                                            TworacesexcludingSomeotherraceandthreeormoreraces = "B02001_010"),
+               survey = "acs5", output = "wide")
+View(SCRace2019) 
+```
+
+```{r}
+write.csv(SCRace2019, paste(path ,"SCRace2019.csv"), row.names = FALSE)
+```
+
+## Georgia 
+```{r}
+GARace2019 <- get_acs(geography = "tract", year = 2019 , state = "GA", 
+               county = GAcounty, variables = c(TotalRace = "B02001_001",
+                                             WhiteAlone = "B02001_002",
+                                             BlackorAfricanAmericanalone = "B02001_003",
+                                             AmericanIndianandAlaskaNativealone = "B02001_004",
+                                             Asianalone = "B02001_005",
+                                             NativeHawaiianandOtherPacificIslanderalone = "B02001_006",
+                                            Someotherracealone = "B02001_007",
+                                            Twoormoreraces = "B02001_008",
+                                            TwoormoreracesTworacesincludingSomeotherrace = "B02001_009",
+                                            TworacesexcludingSomeotherraceandthreeormoreraces = "B02001_010"),
+               survey = "acs5", output = "wide")
+View(GARace2019) 
+```
+
+```{r}
+write.csv(GARace2019, paste(path ,"GARace2019.csv"), row.names = FALSE)
+```
+
+## Virginia 
+
+```{r}
+VARace2019 <- get_acs(geography = "tract", year = 2019 , state = "VA", 
+               county = VAcounty, variables = c(TotalRace = "B02001_001",
+                                             WhiteAlone = "B02001_002",
+                                             BlackorAfricanAmericanalone = "B02001_003",
+                                             AmericanIndianandAlaskaNativealone = "B02001_004",
+                                             Asianalone = "B02001_005",
+                                             NativeHawaiianandOtherPacificIslanderalone = "B02001_006",
+                                            Someotherracealone = "B02001_007",
+                                            Twoormoreraces = "B02001_008",
+                                            TwoormoreracesTworacesincludingSomeotherrace = "B02001_009",
+                                            TworacesexcludingSomeotherraceandthreeormoreraces = "B02001_010"),
+               survey = "acs5", output = "wide")
+View(VARace2019) 
+```
+
+```{r}
+write.csv(VARace2019, paste(path ,"VARace2019.csv"), row.names = FALSE)
+```
+
+
+
+### Median Household Income
+
+## North Carolina 
+```{r}
+NCMI <- get_acs(geography = "tract", year = 2019 , state = "NC", 
+               county = NCcounty, variables = c(MedianHouseholdIncome = "B19013_001",
+                                             WhiteAloneMHI = "B19013A_001",
+                                             BlackorAfricanAmericanaloneMHI = "B19013B_001",
+                                             AmericanIndianandAlaskaNativealoneMHI = "B19013C_001",
+                                             AsianaloneMHI = "B19013D_001",
+                                             NativeHawaiianandOtherPacificIslanderaloneMHI = "B19013E_001",
+                                            SomeotherracealoneMHI = "B19013F_001",
+                                            TwoormoreracesMHI = "B19013G_001",
+                                            WhiteAloneNotHispanicorLatinoMHI = "B19013H_001",
+                                            HispanicOrLatinoMHI = "B19013I_001"
+                                            ),
+               survey = "acs5", geometry =FALSE, output = "wide")
+View(NCMI) 
+```
+
+```{r}
+write.csv(NCMI, paste(path ,"NCMedianHouseholdCome2019.csv"), row.names = FALSE)
+```
+
+## South Carolina
+```{r}
+SCMI <- get_acs(geography = "tract", year = 2019 , state = "SC", 
+               county = SCcounty, variables = c(MedianHouseholdIncome = "B19013_001",
+                                             WhiteAloneMHI = "B19013A_001",
+                                             BlackorAfricanAmericanaloneMHI = "B19013B_001",
+                                             AmericanIndianandAlaskaNativealoneMHI = "B19013C_001",
+                                             AsianaloneMHI = "B19013D_001",
+                                             NativeHawaiianandOtherPacificIslanderaloneMHI = "B19013E_001",
+                                            SomeotherracealoneMHI = "B19013F_001",
+                                            TwoormoreracesMHI = "B19013G_001",
+                                            WhiteAloneNotHispanicorLatinoMHI = "B19013H_001",
+                                            HispanicOrLatinoMHI = "B19013I_001"
+                                            ),
+               survey = "acs5", geometry =FALSE, output = "wide")
+View(SCMI) 
+```
+
+```{r}
+write.csv(SCMI, paste(path ,"SCMedianHouseholdCome2019.csv"), row.names = FALSE)
+```
+
+
+## Georgia 
+
+```{r}
+GAMI <- get_acs(geography = "tract", year = 2019 , state = "GA", 
+               county = GAcounty, variables = c(MedianHouseholdIncome = "B19013_001",
+                                             WhiteAloneMHI = "B19013A_001",
+                                             BlackorAfricanAmericanaloneMHI = "B19013B_001",
+                                             AmericanIndianandAlaskaNativealoneMHI = "B19013C_001",
+                                             AsianaloneMHI = "B19013D_001",
+                                             NativeHawaiianandOtherPacificIslanderaloneMHI = "B19013E_001",
+                                            SomeotherracealoneMHI = "B19013F_001",
+                                            TwoormoreracesMHI = "B19013G_001",
+                                            WhiteAloneNotHispanicorLatinoMHI = "B19013H_001",
+                                            HispanicOrLatinoMHI = "B19013I_001"
+                                            ),
+               survey = "acs5", geometry =FALSE, output = "wide")
+View(GAMI) 
+```
+
+```{r}
+write.csv(GAMI, paste(path ,"GAMedianHouseholdCome2019.csv"), row.names = FALSE)
+```
+
+
+
+## Virginia 
+
+```{r}
+VAMI <- get_acs(geography = "tract", year = 2019 , state = "VA", 
+               county = VAcounty, variables = c(MedianHouseholdIncome = "B19013_001",
+                                             WhiteAloneMHI = "B19013A_001",
+                                             BlackorAfricanAmericanaloneMHI = "B19013B_001",
+                                             AmericanIndianandAlaskaNativealoneMHI = "B19013C_001",
+                                             AsianaloneMHI = "B19013D_001",
+                                             NativeHawaiianandOtherPacificIslanderaloneMHI = "B19013E_001",
+                                            SomeotherracealoneMHI = "B19013F_001",
+                                            TwoormoreracesMHI = "B19013G_001",
+                                            WhiteAloneNotHispanicorLatinoMHI = "B19013H_001",
+                                            HispanicOrLatinoMHI = "B19013I_001"
+                                            ),
+               survey = "acs5", geometry =FALSE, output = "wide")
+View(VAMI) 
+```
+
+```{r}
+write.csv(VAMI, paste(path ,"VAMedianHouseholdCome2019.csv"), row.names = FALSE)
+```
+
+
+## Gini Income Index 
+
+## North Carolina 
+
+```{r}
+NCGini <- get_acs(geography = "tract", year = 2019, variables = c(IncomeInequalityIndex = "B19083_001"), state = "NC", county = NCcounty ,survey = "acs5", geometry = FALSE, output = "wide")
+View(NCGini)
+```
+```{r}
+write.csv(NCGini, paste(path ,"NCIncomeInequality2019.csv"), row.names = FALSE)
+```
+
+## South Carolina 
+
+```{r}
+SCGini <- get_acs(geography = "tract", year = 2019, variables = c(IncomeInequalityIndex = "B19083_001"), state = "SC", county = SCcounty ,survey = "acs5", geometry = FALSE, output = "wide")
+View(SCGini)
+```
+
+```{r}
+write.csv(SCGini, paste(path ,"SCIncomeInequality2019.csv"), row.names = FALSE)
+```
+
+## Georgia 
+
+```{r}
+GAGini <- get_acs(geography = "tract", year = 2019, variables = c(IncomeInequalityIndex = "B19083_001"), state = "GA", county = GAcounty ,survey = "acs5", geometry = FALSE, output = "wide")
+View(GAGini)
+```
+
+```{r}
+write.csv(GAGini, paste(path ,"GAIncomeInequality2019.csv"), row.names = FALSE)
+```
+## Virginia 
+
+```{r}
+VAGini <- get_acs(geography = "tract", year = 2019, variables = c(IncomeInequalityIndex = "B19083_001"), state = "VA", county = VAcounty ,survey = "acs5", geometry = FALSE, output = "wide")
+View(VAGini)
+```
+
+```{r}
+write.csv(VAGini, paste(path ,"VAIncomeInequality2019.csv"), row.names = FALSE)
+```
+
+#Poverty
+
+## North Carolina
+
+```{r}
+NCPov <- get_acs(geography = "tract", year = 2019, variables = c(BelowPoverty = "B17020_002",
+                                                                 TotalPoverty = "B17020_010"), state = "NC", county = NCcounty ,survey = "acs5", geometry = FALSE, output = "wide")
+View(NCPov)	
+
+
+```
+```{r}
+write.csv(NCPov, paste(path ,"NCBelowPovertyLine.csv"), row.names = FALSE)
+```
+
+
+## South Carolina
+
+```{r}
+SCPov <- get_acs(geography = "tract", year = 2019, variables = c(BelowPoverty = "B17020_002",
+                                                                 TotalPoverty = "B17020_010"), state = "SC", county = SCcounty ,survey = "acs5", geometry = FALSE, output = "wide")
+View(SCPov)	
+
+```
+
+```{r}
+write.csv(SCPov, paste(path ,"SCBelowPovertyLine.csv"), row.names = FALSE)
+```
+
+## Georgia 
+
+```{r}
+GAPov <- get_acs(geography = "tract", year = 2019, variables = c(BelowPoverty = "B17020_002",
+                                                                 TotalPoverty = "B17020_010"), state = "GA", county = GAcounty ,survey = "acs5", geometry = FALSE, output = "wide")
+View(GAPov)	
+
+```
+
+```{r}
+write.csv(GAPov, paste(path ,"GABelowPovertyLine.csv"), row.names = FALSE)
+```
+
+## Virginia 
+
+```{r}
+VAPov <- get_acs(geography = "tract", year = 2019, variables = c(BelowPoverty = "B17020_002",
+                                                                 TotalPoverty = "B17020_010"), state = "VA", county = VAcounty ,survey = "acs5", geometry = FALSE, output = "wide")
+View(VAPov)	
+
+
+```
+```{r}
+write.csv(VAPov, paste(path ,"VABelowPovertyLine.csv"), row.names = FALSE)
+```
+
+
+## LaborForce
+
+### North Carolina
+
+```{r}
+NCLB <- get_acs(geography = "tract", year = 2019, variables = c(TotalLF = "B23025_001",
+                                                                 CiviliansInLaborce = "B23025_003",
+                                                                 InLaborForce = "B23025_002",
+                                                                 UnemployedCivilians = "B23025_005",
+                                                                 EmployedCivilians = "B23025_004"
+                                                                 ), 
+                 state = "NC", county = NCcounty ,survey = "acs5", geometry = FALSE, output = "wide")
+View(NCLB)	
+
+
+```
+```{r}
+write.csv(NCLB, paste(path ,"NCLaborFoce.csv"), row.names = FALSE)
+```
+## South Carolina 
+
+```{r}
+SCLB <- get_acs(geography = "tract", year = 2019, variables = c(TotalLF = "B23025_001",
+                                                                 CiviliansInLaborce = "B23025_003",
+                                                                 InLaborForce = "B23025_002",
+                                                                 UnemployedCivilians = "B23025_005",
+                                                                 EmployedCivilians = "B23025_004"
+                                                                 ), 
+                 state = "SC", county = SCcounty ,survey = "acs5", geometry = FALSE, output = "wide")
+View(SCLB)	
+
+
+```
+
+
+```{r}
+write.csv(SCLB, paste(path ,"SCLaborFoce.csv"), row.names = FALSE)
+```
+## Georgia
+
+```{r}
+GALB <- get_acs(geography = "tract", year = 2019, variables = c(TotalLF = "B23025_001",
+                                                                 CiviliansInLaborce = "B23025_003",
+                                                                 InLaborForce = "B23025_002",
+                                                                 UnemployedCivilians = "B23025_005",
+                                                                 EmployedCivilians = "B23025_004"
+                                                                 ), 
+                 state = "GA", county = GAcounty ,survey = "acs5", geometry = FALSE, output = "wide")
+View(GALB)	
+
+
+```
+
+```{r}
+write.csv(GALB, paste(path ,"GALaborFoce.csv"), row.names = FALSE)
+```
+
+## Virginia 
+
+```{r}
+VALB <- get_acs(geography = "tract", year = 2019, variables = c(TotalLF = "B23025_001",
+                                                                 CiviliansInLaborce = "B23025_003",
+                                                                 InLaborForce = "B23025_002",
+                                                                 UnemployedCivilians = "B23025_005",
+                                                                 EmployedCivilians = "B23025_004"
+                                                                 ), 
+                 state = "VA", county = VAcounty ,survey = "acs5", geometry = FALSE, output = "wide")
+View(VALB)	
+
+
+```
+
+```{r}
+write.csv(VALB, paste(path ,"VALaborFoce.csv"), row.names = FALSE)
+```
+
+## Renters 30%  of income above the poverty level 
+
+## North Carolina
+
+```{r}
+NCRent30 <- get_acs(geography = "tract", year = 2019, variables = c(Income20000 = "B25106_028",
+                                                                 Income200034999 = "B25106_032",
+                                                                 Income35000949999 = "B25106_036",
+                                                                 Income5000074999= "B25106_040",
+                                                                 Income75000 = "B25106_044",
+                                                                 NegativeIncome = "B25106_045"
+                                                                 ), 
+                 state = "NC", county = NCcounty ,survey = "acs5", geometry = FALSE, output = "wide")
+View(NCRent30)
+```
+```{r}
+NCRent30 <- NCRent30 %>% select(GEOID,NAME,Income20000E,Income200034999E,Income35000949999E,
+                                Income5000074999E,Income75000E,NegativeIncomeE)
+NCRent30
+```
+
+```{r}
+NCRent30$RentBurden <- NCRent30$Income20000E + NCRent30$Income200034999E + NCRent30$Income35000949999E + NCRent30$Income5000074999E + NCRent30$Income75000E + NCRent30$NegativeIncomeE
+```
+
+
+```{r}
+write.csv(NCRent30, paste(path ,"NCRentBurden.csv"), row.names = FALSE)
+```
+
+## South Carolina 
+
+```{r}
+SCRent30 <- get_acs(geography = "tract", year = 2019, variables = c(Income20000 = "B25106_028",
+                                                                 Income200034999 = "B25106_032",
+                                                                 Income35000949999 = "B25106_036",
+                                                                 Income5000074999= "B25106_040",
+                                                                 Income75000 = "B25106_044",
+                                                                 NegativeIncome = "B25106_045"
+                                                                 ), 
+                 state = "SC", county = SCcounty ,survey = "acs5", geometry = FALSE, output = "wide")
+View(SCRent30)
+```
+```{r}
+SCRent30 <- SCRent30 %>% select(GEOID,NAME,Income20000E,Income200034999E,Income35000949999E,
+                                Income5000074999E,Income75000E,NegativeIncomeE)
+SCRent30
+```
+
+```{r}
+SCRent30$RentBurden <- SCRent30$Income20000E + SCRent30$Income200034999E + SCRent30$Income35000949999E + SCRent30$Income5000074999E + SCRent30$Income75000E + SCRent30$NegativeIncomeE
+```
+
+```{r}
+write.csv(SCRent30, paste(path ,"SCRentBurden.csv"), row.names = FALSE)
+```
+
+
+```{r}
+GARent30 <- get_acs(geography = "tract", year = 2019, variables = c(Income20000 = "B25106_028",
+                                                                 Income200034999 = "B25106_032",
+                                                                 Income35000949999 = "B25106_036",
+                                                                 Income5000074999= "B25106_040",
+                                                                 Income75000 = "B25106_044",
+                                                                 NegativeIncome = "B25106_045"
+                                                                 ), 
+                 state = "GA", county = GAcounty ,survey = "acs5", geometry = FALSE, output = "wide")
+View(GARent30)
+```
+
+```{r}
+GARent30 <- GARent30 %>% select(GEOID,NAME,Income20000E,Income200034999E,Income35000949999E,
+                                Income5000074999E,Income75000E,NegativeIncomeE)
+GARent30
+```
+
+```{r}
+GARent30$RentBurden <- GARent30$Income20000E + GARent30$Income200034999E + GARent30$Income35000949999E + GARent30$Income5000074999E + GARent30$Income75000E + GARent30$NegativeIncomeE
+```
+
+
+
+```{r}
+write.csv(GARent30, paste(path ,"GARentBurden.csv"), row.names = FALSE)
+```
+
+
+```{r}
+VARent30 <- get_acs(geography = "tract", year = 2019, variables = c(Income20000 = "B25106_028",
+                                                                 Income200034999 = "B25106_032",
+                                                                 Income35000949999 = "B25106_036",
+                                                                 Income5000074999= "B25106_040",
+                                                                 Income75000 = "B25106_044",
+                                                                 NegativeIncome = "B25106_045"
+                                                                 ), 
+                 state = "VA", county = VAcounty ,survey = "acs5", geometry = FALSE, output = "wide")
+View(VARent30)
+```
+```{r}
+VARent30 <- VARent30 %>% select(GEOID,NAME,Income20000E,Income200034999E,Income35000949999E,
+                                Income5000074999E,Income75000E,NegativeIncomeE)
+VARent30
+```
+
+```{r}
+VARent30$RentBurden <- VARent30$Income20000E + VARent30$Income200034999E + VARent30$Income35000949999E + VARent30$Income5000074999E + VARent30$Income75000E + VARent30$NegativeIncomeE
+```
+
+
+```{r}
+write.csv(VARent30, paste(path ,"VARentBurden.csv"), row.names = FALSE)
+```

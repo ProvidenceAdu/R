@@ -1,0 +1,99 @@
+
+### Import libraries
+```{r}
+options(scipen=999)
+library(haven)
+library(dplyr)
+library(tidycensus)
+library(janitor)
+library(purrr)
+```
+
+## Setdirectory 
+
+```{r}
+path = "C:/Users/padu/Desktop/IndexResearch/"
+```
+
+# List fips for Geography of interest. Atlanta and Charlotte 
+
+```{r}
+## North Carolina Counties 
+NCcounty = lst(119)
+
+#Georgia Counties
+GAcounty = lst(051, 245, 059, 121,089,067,063,135,113,097)
+```
+
+#Create search to preview variables. The year we are interested in is 2019. The dataset of interest is ACS data
+
+```{r}
+Search <- load_variables(year = 2019, dataset = "acs5", cache = TRUE)
+View(Search)
+```
+
+### Preview 
+
+```{r}
+
+Preview <- get_acs(geography = "tract", year = 2019, variables = "B25063_001", state = "NC", county = NCcounty ,survey = "acs5", geometry = FALSE, output = "wide")
+View(Preview)
+
+```
+
+#### GrossRent
+
+## North Carolina
+```{r}
+NC <- get_acs(geography = "tract", year = 2019, variables = c(Totalrent = "B25058_001"), state = "NC", county = NCcounty ,survey = "acs5", geometry = FALSE, output = "wide")
+View(NC)
+```
+## Poverty -- % Individuals below poverty under .05 
+
+
+```{r}
+NC <- get_acs(geography = "tract", year = 2019, variables = c(PovertyTotal = "C17002_001",
+                                                              PovertyUnder5_0 = "C17002_002",
+                                                              
+                                                              ), state = "NC", county = NCcounty ,survey = "acs5", geometry = FALSE, output = "wide")
+View(NC)
+```
+
+## Median Household Income
+
+## Per Capital Income
+
+## Rent Burden
+
+## Unemployment -- 
+
+## Race - Hispanic 
+
+## Language 
+
+## Age 
+
+## Renters 
+
+## Single Female household
+
+## Single Parent household
+
+## Household on public assistance
+
+## Household without cars
+
+## Education 
+
+## Homeownership
+
+## Housing units -- % mobile homes -- %
+
+## Population 
+
+## 
+```{r}
+write.csv(NC, paste(path ,"NCGrossRent.csv"), row.names = FALSE)
+```
+
+

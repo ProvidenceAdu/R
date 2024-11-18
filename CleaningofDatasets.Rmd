@@ -1,0 +1,122 @@
+
+
+```{r}
+options(scipen=999)
+library(haven)
+library(dplyr)
+library(tidycensus)
+library(janitor)
+library(purrr)
+```
+
+
+```{r}
+setwd("C:/Users/padu/Desktop/IndexResearch/IndexData/")
+```
+
+
+```{r}
+path = "C:/Users/padu/Desktop/IndexResearch/IndexData/"
+```
+
+
+
+## NorthCarolina 
+
+```{r}
+NCBelowPoverty <-  read.csv(" NCBelowPovertyLine.csv")
+NCContract <- read.csv(" NCContract.csv")
+NCEducation <- read.csv(" NCEducation.csv")
+NCInsurance <- read.csv(" NCInsurance.csv")
+NCPercapitaIncome <- read.csv(" NCPercapitaIncome.csv")
+NCPoverty <- read.csv(" NCPoverty.csv")
+NCRentBurden <- read.csv(" NCRentBurden.csv")
+NCMobile <- read.csv(" NCMobileHomes.csv")
+NCMedianHouseIncome <- read.csv(" NCMedianHouseholdCome2019.csv")
+NCSingleParent <- read.csv(" NCSingleParent.csv")
+NCRace2019 <- read.csv(" NCRace2019.csv")
+NCTenure <- read.csv(" NCTenure.csv")
+NCSocial <- read.csv(" NCsocial.csv")
+NCEmployment <- read.csv(" NCUnemployment.csv")
+NCCensusTracts <- read.csv("CharlotteCensusTracts.csv")
+```
+
+## Georgia
+
+```{r}
+GABelowPoverty <-  read.csv(" GABelowPovertyLine.csv")
+GAContract <- read.csv(" GAContract.csv")
+GAEducation <- read.csv(" GAEducation.csv")
+GAInsurance <- read.csv(" GAInsurance.csv")
+GAPercapitaIncome <- read.csv(" GAPercapitaIncome.csv") 
+GAPoverty <- read.csv(" GAPoverty.csv") 
+GARentBurden <- read.csv(" GARentBurden.csv")
+GAMobile <- read.csv(" GAMobileHomes.csv")
+GAMedianHouseIncome <- read.csv(" GAMedianHouseholdCome2019.csv")
+GASingleParent <- read.csv(" GASingleParent.csv")
+GARace2019 <- read.csv(" GARace2019.csv")
+GATenure <- read.csv(" GATenure.csv")
+GASocial <- read.csv(" GAsocial.csv")
+GAEmployment <- read.csv(" GAUnemployment.csv")
+GACensusTracts <- read.csv("AtlantaCensusTracts.csv")
+
+```
+
+
+
+## North Carolina 
+```{r}
+NCFirst <- inner_join(NCBelowPoverty,NCContract, by = "GEOID", copy = FALSE)
+NCSecond <- inner_join(NCFirst,NCEducation, by = "GEOID", copy = FALSE)
+NCThird <- inner_join(NCSecond,NCInsurance, by = "GEOID", copy = FALSE )
+NCFourth <- inner_join(NCThird, NCPercapitaIncome, by = "GEOID", copy = FALSE)
+NCFifth <- inner_join(NCFourth, NCPoverty, by = "GEOID", copy = FALSE)
+NCSixth <- inner_join(NCFifth, NCRentBurden, by = "GEOID", copy = FALSE)
+NCSeven <- inner_join(NCSixth, NCMobile, by = "GEOID", copy = FALSE)
+NCEigth <- inner_join(NCSeven, NCMedianHouseIncome, by = "GEOID", copy = FALSE)
+NCNine <- inner_join(NCEigth, NCSingleParent, by = "GEOID", copy = FALSE)
+NCTen <- inner_join(NCNine, NCRace2019, by = "GEOID", copy = FALSE)
+NCEleven <- inner_join(NCTen, NCTenure, by = "GEOID", copy = FALSE)
+NCTwelve <- inner_join(NCEleven, NCSocial, by = "GEOID", copy = FALSE)
+NCThirteen <- inner_join(NCTwelve, NCEmployment, by = "GEOID", copy = FALSE)
+NCFinal <- left_join(NCCensusTracts,NCThirteen,  by =  "GEOID"  , copy = FALSE)
+```
+```{r}
+names(NCFinal)
+```
+
+```{r}
+NCFinal <-within(NCFinal, rm(ï..OID_,Shape_Length,Shape_Area,PlaceName,NAME))
+```
+
+```{r}
+write.csv(NCFinal, paste(path ,"NCAlldata.csv"), row.names = FALSE)
+```
+
+
+## Georgia 
+```{r}
+GAFirst <- inner_join(GABelowPoverty,GAContract, by = "GEOID", copy = FALSE)
+GASecond <- inner_join(GAFirst,GAEducation, by = "GEOID", copy = FALSE)
+GAThird <- inner_join(GASecond,GAInsurance, by = "GEOID", copy = FALSE )
+GAFourth <- inner_join(GAThird, GAPercapitaIncome, by = "GEOID", copy = FALSE)
+GAFifth <- inner_join(GAFourth, GAPoverty, by = "GEOID", copy = FALSE)
+GASixth <- inner_join(GAFifth, GARentBurden, by = "GEOID", copy = FALSE)
+GASeven <- inner_join(GASixth, GAMobile, by = "GEOID", copy = FALSE)
+GAEigth <- inner_join(GASeven, GAMedianHouseIncome, by = "GEOID", copy = FALSE)
+GANine <- inner_join(GAEigth, GASingleParent, by = "GEOID", copy = FALSE)
+GATen <- inner_join(GANine, GARace2019, by = "GEOID", copy = FALSE)
+GAEleven <- inner_join(GATen, GATenure, by = "GEOID", copy = FALSE)
+GATwelve <- inner_join(GAEleven, GASocial, by = "GEOID", copy = FALSE)
+GAThirteen <- inner_join(GATwelve, GAEmployment, by = "GEOID", copy = FALSE)
+GAFinal <- left_join(GACensusTracts,GAThirteen,  by =  "GEOID"  , copy = FALSE)
+```
+
+```{r}
+GAFinal <- within(GAFinal, rm(ï..OID_,Shape_Length,Shape_Area,PlaceName,NAME))
+```
+
+
+```{r}
+write.csv(GAFinal, paste(path ,"GAAlldata.csv"), row.names = FALSE)
+```
