@@ -1,0 +1,331 @@
+---
+output:
+  word_document: default
+  html_document: default
+---
+
+
+### Load dplyr library
+```{r}
+library(dplyr)   
+```
+
+## Set the path where you would want to export you final cleaned data
+```{r}
+path = "C:/Users/padu/Desktop/Urban Institute/EquityIndicators/"
+```
+
+### Read CSV data downloaded from IPUMS. This is locally saved to you would have to point to where  you locally saved yours. 
+```{r}
+Employment1 <- read.csv("nhgis0001_ds239_20185_2018_tract.csv")
+Employment2 <- read.csv("nhgis0001_ds240_20185_2018_tract.csv")
+```
+
+```{r}
+names(Employment1)
+```
+### Use the filter method so filter out Mecklengburg county. The data covers all the counties in the US but we are ony interest in Mecklenburg county.
+```{r}
+Employment1 <-  filter(Employment1, COUNTY == "Mecklenburg County")
+```
+
+```{r}
+# Employment1 <- Employment1[Employment1$COUNTY == "Mecklenburg County",]
+# Employment1
+```
+
+### Once you download the Ipums data, there is an associated meta data that comes with the raw data, reference the metadata to rename the columns accordingly. For example in the employment data, AJ1CE002 is a column for In Labor Force
+
+```{r}
+Employment1 <- Employment1 %>%  rename("Total" = AJ1CE001,
+                        "In_labor_force" = AJ1CE002,
+                        "In_labor_force_Civilian_labor_force" = AJ1CE003,
+                        "In_labor_force_Civilian_labor_force_Employed" = AJ1CE004,
+                        "In_labor_force_Civilian_labor_force_Unemployed" = AJ1CE005,
+                        "In_labor_force_Armed_Forces" = AJ1CE006,
+                        "Not_in_labor_force" = AJ1CE007,
+                        "Census_Tract" = NAME_E)
+
+Employment1
+
+```
+
+### Once you are done renaming the columns, use the filter %>% and the select method to select only the columns of interest.
+```{r}
+Employment1 <- Employment1 %>% select(Census_Tract, GISJOIN, STATE, COUNTY, Total,In_labor_force,
+                                     In_labor_force_Civilian_labor_force,In_labor_force_Civilian_labor_force_Employed,
+                                      In_labor_force_Civilian_labor_force_Unemployed,
+                                      Not_in_labor_force, In_labor_force_Armed_Forces)
+Employment1
+```
+
+### Once you are done with the filtering and the selecting, export you data to your specified folder(path)
+```{r}
+write.csv(Employment1, paste(path ,"EmploymentStatusforthePopulation16YearsandOver.csv"), row.names = FALSE)
+```
+
+### This is relative to where you saved your CSV on your drive
+
+```{r}
+Employment2 <- read.csv("nhgis0001_ds240_20185_2018_tract.csv")
+```
+
+```{r}
+Employment2 <-  filter(Employment2, COUNTY == "Mecklenburg County")
+```
+
+
+```{r}
+names(Employment2)
+```
+
+```{r}
+Employment2 <- Employment2 %>%  rename("Total" = AKEYE001,
+                                       "Income_in_the_past_12_months_below_poverty_level" = AKEYE002,
+                                       "Income_in_the_past_12_months_at_or_above_poverty_level" = AKEYE010,
+                                       "Gini_Index_Of_Income" = AKGVM001,
+                                       "Census_Tract" = NAME_E
+                                       )
+Employment2
+
+```
+```{r}
+Employment2 <-  filter(Employment2, COUNTY == "Mecklenburg County")
+```
+
+
+
+```{r}
+Employment2 <- Employment2 %>%  select(Total,STATE,
+                                       GISJOIN,STATE,Gini_Index_Of_Income,
+                                       Income_in_the_past_12_months_below_poverty_level, 
+                                       Income_in_the_past_12_months_at_or_above_poverty_level,
+                                       )
+```
+
+```{r}
+write.csv(Employment1, paste(path ,"IncomeBelowPovertyAndGiniIndexofIncome.csv"), row.names = FALSE)
+```
+
+### Read table with housing variables. This include Tenure, Median Gross rent, Inclusion of utilities, and Median Gross Rent as a percentage of household Income in the Past 12 Months
+
+
+```{r}
+HousingBurden <- read.csv("nhgis0003_ds239_20185_2018_tract.csv")
+HousingBurden
+```
+
+### Filter Mecklenburg County. In the future, we can filter all MSA
+```{r}
+HousingBurden <- filter(HousingBurden, COUNTY == "Mecklenburg County")
+HousingBurden
+```
+### Rename column headings using the attacted codebook as a guide. This is for only estimates, Margin of error is not included
+
+
+```{r}
+HousingBurden <- HousingBurden %>% rename("TotalTenure" = AJ1UE001,
+                                          "OwnerOccupied" = AJ1UE002,
+                                          "RenterOccupied" = AJ1UE003,
+                                          "MedianGrossRent" = AJ3EE001,
+                                          "TotalInclusionofUtilitiesinRent" =  AJ3JE001,
+                                          "PayExtraForOneOrMoreUtilities" = AJ3JE002,
+                                          "Noextrapaymentforanyutilities" =  AJ3JE003,
+                                          "MedianGrossRentAsPercentageOfhouseholdIncome" = AJ3LE001,
+                                         "Census_Tract" = NAME_E )
+
+HousingBurden
+```
+### Select renamed columns, Makesure you add GISJOIN for spatial analysis join.
+
+```{r}
+HousingBurden <- HousingBurden %>% select(Census_Tract,GISJOIN,TotalTenure,OwnerOccupied,
+                                          RenterOccupied,TotalInclusionofUtilitiesinRent,
+                                          PayExtraForOneOrMoreUtilities, Noextrapaymentforanyutilities,
+                                          MedianGrossRentAsPercentageOfhouseholdIncome)
+HousingBurden
+```
+### Export all variables in one table, ideal you would separate them individually but mass export just to save time
+```{r}
+write.csv(HousingBurden, paste(path ,"HousingVariablesIncludingTenureMedianRent.csv"), row.names = FALSE)
+```
+
+
+### Read Data for Means of Transportation to Work by Vehicles Available -  Workers 16 years and over in households
+```{r}
+NoVehicles <- read.csv("nhgis0004_ds240_20185_2018_tract.csv")
+NoVehicles
+```
+```{r}
+NoVehicles <- filter(NoVehicles, COUNTY == "Mecklenburg County")
+NoVehicles
+```
+### We are only interested in No Vehicle Available 
+```{r}
+NoVehicles <- NoVehicles %>% rename("NoVehicleAvailable" = AKAYE002,
+                                    "Census_Tract" = NAME_E)
+NoVehicles
+```
+### Select No Vehicles available columns
+```{r}
+NoVehicles <- NoVehicles %>% select(Census_Tract, GISJOIN, STATE, COUNTY, NoVehicleAvailable)
+NoVehicles
+```
+### Export CSV to folder
+```{r}
+write.csv(NoVehicles, paste(path ,"MeansOfTransportationToWorkNoVehiclesAvailable.csv"), row.names = FALSE)
+```
+
+
+### Read Data for Poverty Status In the Past 12 Months
+```{r}
+Poverty <- read.csv("nhgis0005_ds240_20185_2018_tract.csv")
+Poverty
+```
+
+```{r}
+Poverty <- filter(Poverty, COUNTY == "Mecklenburg County")
+Poverty
+```
+### Rename columns Poverty Status. This data was downloaded from Povety Status In The Last 12 Months By Sex By Age 
+
+```{r}
+Poverty <- Poverty %>% rename("TotalWhiteAlone" = AKD2E001,
+                              "BelowPovertyWhiteAlone" = AKD2E002,
+                              "TotalAfricanAmerican" = AKD3E001,
+                              "BelowPovertyAfricanAmerican" = AKD3E002,
+                              "TotalAmericanIndianAlaska" = AKD4E001,
+                              "BelowPovertyAmericanIndianAlaska" =  AKD4E002,
+                              "TotalAsian" = AKD5E001,
+                              "BelowPovertyAsian" = AKD5E002,
+                              "TotalHawaiianPacific" = AKD6E001,
+                              "BelowPovertyHawaiianPacific"= AKD6E002,
+                              "TotalSomeOtherRace" = AKD7E001,
+                              "BelowPovertySomeotherRace" =  AKD7E002,
+                              "TotalTwoorMoreRaces" =  AKD8E001,
+                              "BelowPovertyTwoorMoreRaces" = AKD8E002,
+                              "TotalHispanic" = AKEAE001,
+                              "BelowPovertyHispanic" =  AKEAE002,
+                              "Census_Tract" = NAME_E
+                              )
+
+Poverty
+```
+```{r}
+Poverty <- Poverty %>% select(Census_Tract, GISJOIN, STATE, COUNTY,
+                              TotalWhiteAlone,BelowPovertyWhiteAlone,
+                              TotalAfricanAmerican,BelowPovertyAfricanAmerican,
+                              TotalAmericanIndianAlaska,BelowPovertyAmericanIndianAlaska,
+                              TotalAsian, BelowPovertyAsian,
+                              TotalHawaiianPacific,BelowPovertyHawaiianPacific,
+                              TotalSomeOtherRace,BelowPovertySomeotherRace,
+                              TotalTwoorMoreRaces, BelowPovertyTwoorMoreRaces,
+                              TotalHispanic,BelowPovertyHispanic 
+                              )
+
+Poverty
+```
+### Export Poverty Status to folder
+```{r}
+write.csv(Poverty, paste(path ,"PovertySatusAllRaces.csv"), row.names = FALSE)
+```
+
+
+### Read data for Household Income In the Past 12 Months
+```{r}
+
+HouseholdIncome <- read.csv("nhgis0006_ds239_20185_2018_tract.csv")
+HouseholdIncome
+
+```
+
+```{r}
+HouseholdIncome <- filter(HouseholdIncome, COUNTY == "Mecklenburg County")
+HouseholdIncome
+```
+
+### Rename columns for Household Income in the past 12 months
+
+```{r}
+HouseholdIncome <- HouseholdIncome %>% rename ("Census_Tract" = NAME_E,
+                                               "MedianHouseholdIncomePast12Months_2018" =  AJZAE001,
+                                               "TotalEarn" = AJZOE001,
+                                               "HouseholdsWithEarnings" = AJZOE002,
+                                               "HouseholdsWithNoEarnings" = AJZOE003,
+                                               "HouseholdWithWageorSalaryIncome" =  AJZPE002,
+                                               "HouseholdNoWageorSalaryIncome" = AJZPE003
+                                               )
+HouseholdIncome
+```
+
+
+
+```{r}
+HouseholdIncome <- HouseholdIncome %>% select(Census_Tract, GISJOIN, STATE, COUNTY,
+                                              MedianHouseholdIncomePast12Months_2018,
+                                              TotalEarn, HouseholdsWithEarnings,HouseholdsWithNoEarnings,
+                                              HouseholdWithWageorSalaryIncome, HouseholdNoWageorSalaryIncome
+                                              )
+HouseholdIncome
+```
+```{r}
+write.csv(HouseholdIncome, paste(path ,"HouseholdIncomeInPast12Months.csv"), row.names = FALSE)
+```
+
+### Read data for Median Household Income In the Past 12 months by race
+```{r}
+MedianHouseholdIncome <- read.csv("nhgis0006_ds240_20185_2018_tract.csv")
+MedianHouseholdIncome
+```
+
+```{r}
+MedianHouseholdIncome <- filter(MedianHouseholdIncome, COUNTY == "Mecklenburg County")
+MedianHouseholdIncome
+```
+
+
+```{r}
+MedianHouseholdIncome <- MedianHouseholdIncome %>% rename("Census_Tract" = NAME_E,
+                                                          "MedianHouseholdIncomeWhiteAlone" =  AKF9E001,
+                                                          "MedianHouseholdIncomeBlackAlone"= AKGAE001,
+                                                          "MedianHouseholdIncomeIndianAlaska" = AKGBE001,
+                                                          "MedianHouseholdIncomeAsianAlone" = AKGCE001,
+                                                          "MedianHouseholdIncomeNativeHawaiianIslander" =  AKGDE001,
+                                                          "MedianHouseholdIncomeSomeOtherRaceAlone" = AKGEE001,
+                                                          "MedianHouseholdIncomeTwoormore" = AKGFE001,
+                                                          "MedianHouseholdIncomeHispanic" = AKGHE001)
+
+MedianHouseholdIncome
+```
+
+
+```{r}
+MedianHouseholdIncome <- MedianHouseholdIncome %>% select(Census_Tract,GISJOIN,STATE,COUNTY,  
+                                                          MedianHouseholdIncomeWhiteAlone,
+                                                          MedianHouseholdIncomeBlackAlone, 
+                                                          MedianHouseholdIncomeIndianAlaska,
+                                                          MedianHouseholdIncomeAsianAlone,
+                                                          MedianHouseholdIncomeNativeHawaiianIslander,
+                                                          MedianHouseholdIncomeSomeOtherRaceAlone,
+                                                          MedianHouseholdIncomeTwoormore, 
+                                                          MedianHouseholdIncomeHispanic
+                                                          )
+
+MedianHouseholdIncome
+```
+
+```{r}
+write.csv(MedianHouseholdIncome, paste(path ,"MedianHouseholdIncomeByRace.csv"), row.names = FALSE)
+```
+
+```{r}
+Industry <- read.csv("qwi_f7191fbc5291436184eed17a54e9cea4.csv")
+Industry
+```
+### Get Multiple States At Once
+
+```{r}
+variables
+```
+
+
