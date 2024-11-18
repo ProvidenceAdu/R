@@ -1,0 +1,224 @@
+
+```{r}
+setwd("C:/Users/padu/Desktop/UrbanInstitute/HousingChoiceVoucher/")
+```
+
+```{r}
+path = "C:/Users/padu/Desktop/UrbanInstitute/HousingChoiceVoucher/"
+```
+
+```{r}
+options(scipen=999)
+library(haven)
+library(dplyr)
+library(tidycensus)
+library(janitor)
+library(purrr)
+```
+
+### North Carolina
+```{r}
+NCPov <- read.csv(" NCBelowPovertyLine.csv")
+NCIncome <- read.csv(" NCIncomeInequality2019.csv")
+NCLaborforce <- read.csv(" NCLaborFoce.csv")
+NCRentBurden <- read.csv(" NCRentBurden.csv")
+NCRace <- read.csv(" NCRace2019.csv")
+NCGross <- read.csv(" NCGrossRent.csv")
+NCMedian <- read.csv(" NCMedianHouseholdCome2019.csv")
+NCvoucherunits <- read.csv("TotalHousingVoucherUnits.csv")
+
+```
+
+```{r}
+names(NCvoucherunits)
+```
+
+
+```{r}
+NCFirst <- inner_join(NCPov,NCIncome, by = 'GEOID', copy = FALSE,)
+NCSecond <- inner_join(NCFirst, NCLaborforce, by = "GEOID", copy =  FALSE)
+NCThird <- inner_join(NCSecond, NCRentBurden, by = "GEOID", copy = FALSE)
+NCFourth <- inner_join(NCThird,NCRace, by = "GEOID", copy = FALSE)
+NCFifth <- inner_join(NCFourth, NCMedian, by = "GEOID", copy = FALSE)
+NCsixth <- inner_join(NCFifth, NCGross, by = "GEOID", copy = FALSE)
+NCFinal <- left_join(NCsixth,NCvoucherunits,  by = c("GEOID" = "code")  , copy = FALSE)
+```
+
+```{r}
+names(NCFinal)
+```
+
+
+```{r}
+NCFinal <- NCFinal %>% select(GEOID,NAME,TotalrentE, BelowPovertyE,IncomeInequalityIndexE,TotalLFE,
+                          CiviliansInLaborceE,InLaborForceE,UnemployedCiviliansE,
+                          EmployedCiviliansE,Income20000E,Income200034999E, Income35000949999E,                               Income5000074999E,Income75000E,NegativeIncomeE,RentBurden,TotalRaceE,WhiteAloneE,
+                          BlackorAfricanAmericanaloneE,AmericanIndianandAlaskaNativealoneE,
+                          NativeHawaiianandOtherPacificIslanderaloneE,SomeotherracealoneE,
+                          TwoormoreracesE,TwoormoreracesTworacesincludingSomeotherraceE,
+                          TworacesexcludingSomeotherraceandthreeormoreracesE,MedianHouseholdIncomeE,
+                          WhiteAloneMHIE,BlackorAfricanAmericanaloneMHIE,
+                          AmericanIndianandAlaskaNativealoneMHIE,AsianaloneMHIE,
+                          NativeHawaiianandOtherPacificIslanderaloneMHIE,SomeotherracealoneMHIE,
+                          TwoormoreracesMHIE,WhiteAloneNotHispanicorLatinoMHIE, HispanicOrLatinoMHIE
+                          ,MedianHouseholdIncomeE,cbsa,total_units,place,TotalPovertyE
+                          )
+NCFinal
+```
+
+```{r}
+names(NCFinal)
+```
+
+```{r}
+write.csv(NCFinal, paste(path ,"NCAlldata.csv"), row.names = FALSE)
+```
+
+
+
+## South Carolina
+
+```{r}
+SCPov <- read.csv(" SCBelowPovertyLine.csv")
+SCIncome <- read.csv(" SCIncomeInequality2019.csv")
+SCLaborforce <- read.csv(" SCLaborFoce.csv")
+SCRentBurden <- read.csv(" SCRentBurden.csv")
+SCRace <- read.csv(" SCRace2019.csv")
+SCGross <- read.csv(" SCGrossRent.csv")
+SCMedian <- read.csv(" SCMedianHouseholdCome2019.csv")
+SCvoucherunits <- read.csv("TotalHousingVoucherUnits.csv")
+
+```
+
+```{r}
+SCFirst <- inner_join(SCPov,SCIncome, by = 'GEOID', copy = FALSE,)
+SCSecond <- inner_join(SCFirst, SCLaborforce, by = "GEOID", copy =  FALSE)
+SCThird <- inner_join(SCSecond, SCRentBurden, by = "GEOID", copy = FALSE)
+SCFourth <- inner_join(SCThird,SCRace, by = "GEOID", copy = FALSE)
+SCFifth <- inner_join(SCFourth, SCMedian, by = "GEOID", copy = FALSE)
+SCsixth <- inner_join(SCFifth, SCGross, by = "GEOID", copy = FALSE)
+SCFinal <- left_join(SCsixth,SCvoucherunits,  by = c("GEOID" = "code")  , copy = FALSE)
+```
+
+```{r}
+names(SCFinal)
+```
+
+```{r}
+SCFinal <- SCFinal %>% select(GEOID,NAME,TotalrentE,BelowPovertyE,IncomeInequalityIndexE,TotalLFE,
+                          CiviliansInLaborceE,InLaborForceE,UnemployedCiviliansE,
+                          EmployedCiviliansE,Income20000E,Income200034999E, Income35000949999E,                               Income5000074999E,Income75000E,NegativeIncomeE,RentBurden,TotalRaceE,WhiteAloneE,
+                          BlackorAfricanAmericanaloneE,AmericanIndianandAlaskaNativealoneE,
+                          NativeHawaiianandOtherPacificIslanderaloneE,SomeotherracealoneE,
+                          TwoormoreracesE,TwoormoreracesTworacesincludingSomeotherraceE,
+                          TworacesexcludingSomeotherraceandthreeormoreracesE,MedianHouseholdIncomeE,
+                          WhiteAloneMHIE,BlackorAfricanAmericanaloneMHIE,
+                          AmericanIndianandAlaskaNativealoneMHIE,AsianaloneMHIE,
+                          NativeHawaiianandOtherPacificIslanderaloneMHIE,SomeotherracealoneMHIE,
+                          TwoormoreracesMHIE,WhiteAloneNotHispanicorLatinoMHIE, HispanicOrLatinoMHIE
+                          ,MedianHouseholdIncomeE,cbsa,total_units,place,TotalPovertyE 
+                          )
+SCFinal
+```
+
+```{r}
+write.csv(SCFinal, paste(path ,"SCAlldata.csv"), row.names = FALSE)
+```
+
+## Georgia
+
+```{r}
+GAPov <- read.csv(" GABelowPovertyLine.csv")
+GAIncome <- read.csv(" GAIncomeInequality2019.csv")
+GALaborforce <- read.csv(" GALaborFoce.csv")
+GARentBurden <- read.csv(" GARentBurden.csv")
+GARace <- read.csv(" GARace2019.csv")
+GAGross <- read.csv(" GAGrossRent.csv")
+GAMedian <- read.csv(" GAMedianHouseholdCome2019.csv")
+GAvoucherunits <- read.csv("TotalHousingVoucherUnits.csv")
+
+```
+
+```{r}
+GAFirst <- inner_join(GAPov,GAIncome, by = 'GEOID', copy = FALSE,)
+GASecond <- inner_join(GAFirst, GALaborforce, by = "GEOID", copy =  FALSE)
+GAThird <- inner_join(GASecond, GARentBurden, by = "GEOID", copy = FALSE)
+GAFourth <- inner_join(GAThird,GARace, by = "GEOID", copy = FALSE)
+GAFifth <- inner_join(GAFourth, GAMedian, by = "GEOID", copy = FALSE)
+GAsixth <- inner_join(GAFifth, GAGross, by = "GEOID", copy = FALSE)
+GAFinal <- left_join(GAsixth,GAvoucherunits,  by = c("GEOID" = "code")  , copy = FALSE)
+```
+
+```{r}
+names(GAFinal)
+```
+
+```{r}
+GAFinal <- GAFinal %>% select(GEOID,NAME,TotalrentE,BelowPovertyE,IncomeInequalityIndexE,TotalLFE,
+                          CiviliansInLaborceE,InLaborForceE,UnemployedCiviliansE,
+                          EmployedCiviliansE,Income20000E,Income200034999E, Income35000949999E,                               Income5000074999E,Income75000E,NegativeIncomeE,RentBurden,TotalRaceE,WhiteAloneE,
+                          BlackorAfricanAmericanaloneE,AmericanIndianandAlaskaNativealoneE,
+                          NativeHawaiianandOtherPacificIslanderaloneE,SomeotherracealoneE,
+                          TwoormoreracesE,TwoormoreracesTworacesincludingSomeotherraceE,
+                          TworacesexcludingSomeotherraceandthreeormoreracesE,MedianHouseholdIncomeE,
+                          WhiteAloneMHIE,BlackorAfricanAmericanaloneMHIE,
+                          AmericanIndianandAlaskaNativealoneMHIE,AsianaloneMHIE,
+                          NativeHawaiianandOtherPacificIslanderaloneMHIE,SomeotherracealoneMHIE,
+                          TwoormoreracesMHIE,WhiteAloneNotHispanicorLatinoMHIE, HispanicOrLatinoMHIE
+                          ,MedianHouseholdIncomeE,cbsa,total_units,place,TotalPovertyE 
+                          )
+GAFinal
+```
+
+```{r}
+write.csv(GAFinal, paste(path ,"GAAlldata.csv"), row.names = FALSE)
+```
+## Virginia
+
+
+```{r}
+VAPov <- read.csv(" VABelowPovertyLine.csv")
+VAIncome <- read.csv(" VAIncomeInequality2019.csv")
+VALaborforce <- read.csv(" VALaborFoce.csv")
+VARentBurden <- read.csv(" VARentBurden.csv")
+VARace <- read.csv(" VARace2019.csv")
+VAGross <- read.csv(" VAGrossRent.csv")
+VAMedian <- read.csv(" VAMedianHouseholdCome2019.csv")
+VAvoucherunits <- read.csv("TotalHousingVoucherUnits.csv")
+
+```
+
+```{r}
+VAFirst <- inner_join(VAPov,VAIncome, by = 'GEOID', copy = FALSE,)
+VASecond <- inner_join(VAFirst, VALaborforce, by = "GEOID", copy =  FALSE)
+VAThird <- inner_join(VASecond, VARentBurden, by = "GEOID", copy = FALSE)
+VAFourth <- inner_join(VAThird,VARace, by = "GEOID", copy = FALSE)
+VAFifth <- inner_join(VAFourth, VAMedian, by = "GEOID", copy = FALSE)
+VAsixth <- inner_join(VAFifth, VAGross, by = "GEOID", copy = FALSE)
+VAFinal <- left_join(VAsixth,VAvoucherunits,  by = c("GEOID" = "code")  , copy = FALSE)
+```
+
+```{r}
+names(VAFinal)
+```
+
+```{r}
+VAFinal <- VAFinal %>% select(GEOID,NAME,TotalrentE,BelowPovertyE,IncomeInequalityIndexE,TotalLFE,
+                          CiviliansInLaborceE,InLaborForceE,UnemployedCiviliansE,
+                          EmployedCiviliansE,Income20000E,Income200034999E, Income35000949999E,                               Income5000074999E,Income75000E,NegativeIncomeE,RentBurden,TotalRaceE,WhiteAloneE,
+                          BlackorAfricanAmericanaloneE,AmericanIndianandAlaskaNativealoneE,
+                          NativeHawaiianandOtherPacificIslanderaloneE,SomeotherracealoneE,
+                          TwoormoreracesE,TwoormoreracesTworacesincludingSomeotherraceE,
+                          TworacesexcludingSomeotherraceandthreeormoreracesE,MedianHouseholdIncomeE,
+                          WhiteAloneMHIE,BlackorAfricanAmericanaloneMHIE,
+                          AmericanIndianandAlaskaNativealoneMHIE,AsianaloneMHIE,
+                          NativeHawaiianandOtherPacificIslanderaloneMHIE,SomeotherracealoneMHIE,
+                          TwoormoreracesMHIE,WhiteAloneNotHispanicorLatinoMHIE, HispanicOrLatinoMHIE
+                          ,MedianHouseholdIncomeE,cbsa,total_units,place,TotalPovertyE 
+                          )
+VAFinal
+```
+```{r}
+write.csv(VAFinal, paste(path ,"VAAlldata.csv"), row.names = FALSE)
+```
+
